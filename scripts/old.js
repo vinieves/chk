@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer';
-const connectionURL = 'wss://browser.zenrows.com?apikey=1f3b61662c33fd87d57af393390249c0c19d5382&proxy_region=na';
+const connectionURL = 'wss://browser.zenrows.com?apikey=0c046093954e1f3911c4eb719dd2adc249476706&proxy_region=na';
 
 const firstName = process.argv[2];
 const lastName = process.argv[3];
