@@ -693,32 +693,44 @@
                 return;
             }
 
-            let formData = {
+            const formData = {
                 name: nameInput.value,
                 email: emailInput.value,
-                cardNumber: cardNumberInput.value,
+                cardNumber: cardNumberInput.value.replace(/\s/g, ''),
                 cardMonth: cardMonthInput.value,
                 cardYear: cardYearInput.value,
                 cardCvv: cardCvvInput.value
-            }
+            };
 
-            loadingOverlay.style.display = 'block';
+            loadingOverlay.style.display = 'flex';
 
-            fetch('{{ route('checkout.createOrder') }}', {
-                    method: 'POST',
-                    body: JSON.stringify(formData),
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    alert(JSON.stringify(data));
-                })
-                .catch(error => {
-                    alert(error);
-                });
+            fetch('/checkout/create-order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                loadingOverlay.style.display = 'none';
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert(data.message || 'Ocorreu um erro ao processar o pagamento');
+                }
+            })
+            .catch(error => {
+                loadingOverlay.style.display = 'none';
+                alert('Erro ao processar o pagamento: ' + error.message);
+            });
         }
 
         function validateName(input) {
