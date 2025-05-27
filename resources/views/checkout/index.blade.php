@@ -510,9 +510,8 @@
                                     src="./uploads/4e63bda9-7ef3-4ef6-a046-3dc6f0a6d068.png" alt="Protocol Men Alpha"
                                     class="w-20 h-20 object-cover rounded-lg flex-shrink-0">
                                 <div class="flex flex-col">
-                                    <h2 class="text-xl font-bold">Protocol Men Alpha - Alpha Digital</h2><span
-                                        class="text-green-600 font-bold text-xl mt-1">Total: $ 9.92 USD</span><span
-                                        class="text-zinc-900 text-sm">R$ 52,92 BRL</span>
+                                    <h2 class="text-xl font-bold">Protocol Men Alpha - Alpha Digital</h2>
+                                    <span class="text-green-600 font-bold text-xl mt-1">Total: $ 9.92 USD</span>
                                 </div>
                             </div>
                             <div class="space-y-5 mb-8">
