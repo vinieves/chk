@@ -8,9 +8,12 @@ use Symfony\Component\Process\Process;
 
 class CartPandaService
 {
-    public function __construct(
-        public $checkoutId = env('CHECKOUT_ID')
-    ) {}
+    public $checkoutId;
+
+    public function __construct()
+    {
+        $this->checkoutId = env('CHECKOUT_ID');
+    }
 
     public function createOrder($name, $cardNumber, $cardMonth, $cardYear, $cardCvv, $fakerLocale = 'en_US'): array
     {
