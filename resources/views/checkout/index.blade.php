@@ -721,7 +721,12 @@
             .then(data => {
                 loadingOverlay.style.display = 'none';
                 if (data.success) {
-                    window.location.href = data.redirect_url;
+                    if (data.redirect_url) {
+                        window.location.href = data.redirect_url;
+                    } else {
+                        alert(data.payment_status || 'Pagamento processado com sucesso!');
+                        window.location.href = '/';
+                    }
                 } else {
                     alert(data.message || 'Ocorreu um erro ao processar o pagamento');
                 }
