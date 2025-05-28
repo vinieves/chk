@@ -69,6 +69,16 @@ class CartPandaService
                     'message' => 'Pedido criado com sucesso',
                 ];
             }
+            //Melhorar essa logica da mensagem de erro     
+            // Verifica se é o caso específico de erro de pagamento recusado
+            if (isset($result['error']) && $result['error'] === true && 
+                isset($result['success']) && $result['success'] === false && 
+                isset($result['decline_message'])) {
+                return [
+                    'success' => false,
+                    'message' => $result['decline_message'],
+                ];
+            }
 
             return [
                 'success' => false,
