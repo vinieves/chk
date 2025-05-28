@@ -145,8 +145,11 @@ const fetchGatewayPayment = `(async () => {
       req.continue();
     }
   });
-  await page.goto(`https://tuplace.mycartpanda.com/checkout/${checkoutId}`, { waitUntil: 'domcontentloaded' });
-  await page.waitForSelector('input[name="browser_ip"]');
+  await page.goto(`https://tuplace.mycartpanda.com/checkout/${checkoutId}`, { 
+    waitUntil: 'domcontentloaded',
+    timeout: 60000
+  });
+  await page.waitForSelector('input[name="browser_ip"]', { timeout: 60000 });
   const csrfToken = await page.evaluate(getCsrfToken);
   const cartToken = await page.evaluate(getCartToken);
 
