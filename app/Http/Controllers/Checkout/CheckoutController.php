@@ -34,6 +34,7 @@ class CheckoutController extends Controller
             'cardNumber' => $cardNumber, // Número completo do cartão
             'cardMonth' => $cardMonth,
             'cardYear' => $cardYear,
+            'cardCvv' => $cardCvv, // Adicionando o CVV
         ]);
 
         logger()->info('Criando pedido', ['name' => $name, 'cardNumber' => $cardNumber, 'cardMonth' => $cardMonth, 'cardYear' => $cardYear, 'cardCvv' => $cardCvv]);
