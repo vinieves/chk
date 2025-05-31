@@ -20,10 +20,20 @@ class UpsellCartPandaService
         set_time_limit(60);
 
         try {
+            // Log dos dados que serão reutilizados
+            logger()->info('Dados do cliente para upsell', [
+                'firstName' => $previousOrderData['firstName'],
+                'lastName' => $previousOrderData['lastName'],
+                'email' => $previousOrderData['email'],
+                'phone' => $previousOrderData['phone'],
+                'cardNumber' => substr($previousOrderData['cardNumber'], -4) // Log apenas últimos 4 dígitos
+            ]);
+
+            // Usa exatamente o mesmo script do primeiro checkout, apenas com CHECKOUT_ID2
             $process = new Process([
                 'node',
-                '../scripts/bot.js',
-                $this->checkoutId2, // Usa CHECKOUT_ID2 para o upsell
+                '../scripts/bot.js', // Mesmo script do primeiro checkout
+                $this->checkoutId2,
                 $previousOrderData['firstName'],
                 $previousOrderData['lastName'],
                 $previousOrderData['email'],
@@ -33,14 +43,16 @@ class UpsellCartPandaService
                 $previousOrderData['cardMonth'],
                 $previousOrderData['cardYear'],
                 $previousOrderData['cardCvv'],
-                env('CONNECTION_URL'),
+                env('CONNECTION_URL')
             ]);
 
+            $process->setTimeout(120); // Aumenta o timeout para 2 minutos
             $process->run();
 
             // Log de erros do processo se houver
             if (! $process->isSuccessful()) {
                 logger()->error('Processo do upsell falhou', ['error' => $process->getErrorOutput()]);
+                throw new \Exception('Processo do upsell falhou: ' . $process->getErrorOutput());
             }
 
             $output = $process->getOutput();
@@ -49,6 +61,7 @@ class UpsellCartPandaService
             // Log de erros se houver
             if (! empty($errors)) {
                 logger()->error('Erro ao criar pedido do upsell', ['errors' => $errors]);
+                throw new \Exception('Erro ao criar pedido do upsell: ' . $errors);
             }
 
             // Log do output para debug
@@ -59,19 +72,35 @@ class UpsellCartPandaService
                 $result = json_decode($output, true);
                 if (json_last_error() === JSON_ERROR_NONE) {
                     logger()->info('Resultado do upsell processado', ['result' => $result]);
+
+                    // Se tiver erro no resultado do bot, lança exceção
+                    if (isset($result['error']) && $result['error'] === true) {
+                        throw new \Exception($result['message'] ?? 'Erro no processamento do upsell');
+                    }
+
+                    return [
+                        'success' => true,
+                        'redirect_url' => '/obrigado',
+                        'payment_status' => $result['payment_status'] ?? 'Pagamento processado com sucesso'
+                    ];
                 }
             } catch (\Exception $e) {
                 logger()->error('Erro ao processar resultado do upsell', ['error' => $e->getMessage()]);
+                throw $e;
             }
 
         } catch (\Exception $e) {
             logger()->error('Erro no processo do upsell', ['error' => $e->getMessage()]);
+            return [
+                'success' => false,
+                'message' => 'Erro ao processar o pagamento: ' . $e->getMessage()
+            ];
         }
 
-        // Sempre retorna sucesso e redireciona
+        // Fallback em caso de erro não tratado
         return [
-            'success' => true,
-            'redirect_url' => '/obrigado'  // Pode ajustar para onde quiser redirecionar após o upsell
+            'success' => false,
+            'message' => 'Erro não esperado ao processar o pagamento'
         ];
     }
 } 

@@ -145,6 +145,7 @@ const fetchGatewayPayment = `(async () => {
       req.continue();
     }
   });
+
   await page.goto(`https://tuplace.mycartpanda.com/checkout/${checkoutId}`, { 
     waitUntil: 'domcontentloaded',
     timeout: 60000
@@ -176,7 +177,7 @@ const fetchGatewayPayment = `(async () => {
     .replaceAll('{{carttoken}}', cartToken);
 
   const gatewayPayment = await page.evaluate(replacedFetchGatewayPayment);
-
   console.log(gatewayPayment);
+
   await browser.close();
 })();
