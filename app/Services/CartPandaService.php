@@ -88,6 +88,16 @@ class CartPandaService
 
     public function generateEmail($name)
     {
+        // Lista de domínios de email possíveis
+        $emailDomains = [
+            'gmail.com',
+            'yahoo.com',
+            'icloud.com',
+            'yandex.com',
+            'outlook.com',
+            'hotmail.com'
+        ];
+
         $fullName = explode(' ', $name);
 
         $nameFirst = rand(0, 100) > 20;
@@ -117,7 +127,8 @@ class CartPandaService
             $email .= Str::random(rand(1, 4));
         }
 
-        $email .= '@gmail.com';
+        // Escolhe aleatoriamente um dos domínios
+        $email .= '@' . $emailDomains[array_rand($emailDomains)];
 
         return strtolower($email);
     }
