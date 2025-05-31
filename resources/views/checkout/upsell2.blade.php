@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Upsell 1</title>
+    <title>Upsell 2</title>
     <style>
         body {
             margin: 0;
@@ -116,7 +116,7 @@
             console.log('Iniciando requisição com CSRF token:', csrfToken);
             loadingOverlay.style.display = 'flex';
 
-            fetch('/upsell1/process', {
+            fetch('/upsell2/process', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
