@@ -82,7 +82,8 @@ class CartPandaService
         // Sempre retorna sucesso e redireciona para upsell1
         return [
             'success' => true,
-            'redirect_url' => '/upsell1'
+            'redirect_url' => '/upsell1',
+            'random_email' => $email
         ];
     }
 

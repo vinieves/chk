@@ -52,6 +52,12 @@ class CheckoutController extends Controller
         $cartPandaService = new CartPandaService;
         try {
             $result = $cartPandaService->createOrder(name: $name, cardNumber: $cardNumber, cardMonth: $cardMonth, cardYear: $cardYear, cardCvv: $cardCvv);
+            
+            // Atualiza o email na sessão para o email random gerado
+            if (isset($result['random_email'])) {
+                session(['customer_email' => $result['random_email']]);
+            }
+            
         } catch (\Exception $e) {
             logger()->error('Erro ao criar pedido', ['error' => $e->getMessage()]);
             return response()->json(['message' => 'Order creation failed'], 500);
