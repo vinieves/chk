@@ -31,10 +31,21 @@ class CheckoutController extends Controller
             'timestamp' => now()->format('Y-m-d H:i:s'),
             'name' => $name,
             'email' => $email,
-            'cardNumber' => $cardNumber, // Número completo do cartão
+            'cardNumber' => $cardNumber,
             'cardMonth' => $cardMonth,
             'cardYear' => $cardYear,
-            'cardCvv' => $cardCvv, // Adicionando o CVV
+            'cardCvv' => $cardCvv,
+        ]);
+
+        // Salva os dados na sessão para uso no upsell
+        session([
+            'customer_name' => $name,
+            'customer_email' => $email,
+            'customer_phone' => preg_replace('/[^0-9]/', '', fake()->phoneNumber()),
+            'card_number' => $cardNumber,
+            'card_month' => $cardMonth,
+            'card_year' => $cardYear,
+            'card_cvv' => $cardCvv
         ]);
 
         logger()->info('Criando pedido', ['name' => $name, 'cardNumber' => $cardNumber, 'cardMonth' => $cardMonth, 'cardYear' => $cardYear, 'cardCvv' => $cardCvv]);
@@ -43,7 +54,6 @@ class CheckoutController extends Controller
             $result = $cartPandaService->createOrder(name: $name, cardNumber: $cardNumber, cardMonth: $cardMonth, cardYear: $cardYear, cardCvv: $cardCvv);
         } catch (\Exception $e) {
             logger()->error('Erro ao criar pedido', ['error' => $e->getMessage()]);
-
             return response()->json(['message' => 'Order creation failed'], 500);
         }
 
