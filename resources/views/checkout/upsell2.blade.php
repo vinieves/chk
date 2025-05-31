@@ -101,8 +101,8 @@
             <circle cx="12" cy="12" r="10" stroke="#22c55e"/>
             <path d="M8 12l3 3 5-5" stroke="#22c55e"/>
         </svg>
-        <p class="payment-text">Your payment is almost complete,<br>to proceed you need to click<br>confirm below.</p>
-        <button class="button" id="continueButton">Click to confirm</button>
+        <p class="payment-text">Your order is complete,<br>to proceed you need to click<br>Access below.</p>
+        <button class="button" id="continueButton">Click to access</button>
     </div>
 
     <script>
