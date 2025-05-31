@@ -65,10 +65,16 @@
             justify-content: center;
             align-items: center;
             z-index: 50;
+            text-align: center;
         }
 
         .loading-content {
             text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
         }
 
         .spinner {
@@ -78,7 +84,7 @@
             border-top: 4px solid transparent;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-bottom: 24px;
+            margin: 0 auto 24px;
         }
 
         @keyframes spin {
