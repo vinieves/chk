@@ -40,10 +40,10 @@ class Upsell2Controller extends Controller
         // Processa o upsell usando o serviço dedicado
         $result = $this->upsellService->processUpsell2($previousOrderData);
 
-        // Sempre redireciona para /obrigado
+        // Sempre redireciona para /thankyou
         return response()->json([
             'success' => true,
-            'redirect_url' => '/obrigado'
+            'redirect_url' => '/thankyou'
         ]);
     }
 }

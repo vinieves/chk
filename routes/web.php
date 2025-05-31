@@ -19,3 +19,7 @@ Route::get('/upsell2', function () {
 });
 
 Route::post('/upsell2/process', [Upsell2Controller::class, 'processUpsell2'])->name('upsell2.process');
+
+Route::get('/thankyou', function () {
+    return view('checkout.thankyou');
+});

@@ -80,7 +80,7 @@ class Upsell2CartPandaService
 
                     return [
                         'success' => true,
-                        'redirect_url' => '/obrigado',
+                        'redirect_url' => '/thankyou',
                         'payment_status' => $result['payment_status'] ?? 'Pagamento processado com sucesso'
                     ];
                 }
